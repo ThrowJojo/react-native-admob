@@ -76,17 +76,17 @@ public class RNAdMobRewardedVideoAdModule extends ReactContextBaseJavaModule imp
 
         switch (errorCode) {
             case AdRequest.ERROR_CODE_INTERNAL_ERROR:
-            errorString = "ERROR_CODE_INTERNAL_ERROR";
-            break;
+                errorString = "ERROR_CODE_INTERNAL_ERROR";
+                break;
             case AdRequest.ERROR_CODE_INVALID_REQUEST:
-            errorString = "ERROR_CODE_INVALID_REQUEST";
-            break;
+                errorString = "ERROR_CODE_INVALID_REQUEST";
+                break;
             case AdRequest.ERROR_CODE_NETWORK_ERROR:
-            errorString = "ERROR_CODE_NETWORK_ERROR";
-            break;
+                errorString = "ERROR_CODE_NETWORK_ERROR";
+                break;
             case AdRequest.ERROR_CODE_NO_FILL:
-            errorString = "ERROR_CODE_NO_FILL";
-            break;
+                errorString = "ERROR_CODE_NO_FILL";
+                break;
         }
 
         event.putString("error", errorString);

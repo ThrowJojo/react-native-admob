@@ -19,8 +19,6 @@ public class RNAdMobInterstitialAdModule extends ReactContextBaseJavaModule {
   InterstitialAd mInterstitialAd;
   String adUnitID;
   String testDeviceID;
-  Callback requestAdCallback;
-  Callback showAdCallback;
 
   @Override
   public String getName() {
@@ -38,7 +36,6 @@ public class RNAdMobInterstitialAdModule extends ReactContextBaseJavaModule {
           @Override
           public void onAdClosed() {
             sendEvent("interstitialDidClose", null);
-            showAdCallback.invoke();
           }
           @Override
           public void onAdFailedToLoad(int errorCode) {
@@ -60,7 +57,6 @@ public class RNAdMobInterstitialAdModule extends ReactContextBaseJavaModule {
             }
             event.putString("error", errorString);
             sendEvent("interstitialDidFailToLoad", event);
-            requestAdCallback.invoke(errorString);
           }
           @Override
           public void onAdLeftApplication() {
@@ -69,7 +65,6 @@ public class RNAdMobInterstitialAdModule extends ReactContextBaseJavaModule {
           @Override
           public void onAdLoaded() {
             sendEvent("interstitialDidLoad", null);
-            requestAdCallback.invoke();
           }
           @Override
           public void onAdOpened() {
@@ -94,39 +89,32 @@ public class RNAdMobInterstitialAdModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void requestAd(final Callback callback) {
+  public void requestAd() {
     new Handler(Looper.getMainLooper()).post(new Runnable() {
       @Override
       public void run () {
-        if (mInterstitialAd.isLoaded() || mInterstitialAd.isLoading()) {
-          callback.invoke("Ad is already loaded."); // TODO: make proper error
-        } else {
-          requestAdCallback = callback;
-          AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
-          if (testDeviceID != null){
-            if (testDeviceID.equals("EMULATOR")) {
-              adRequestBuilder = adRequestBuilder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
-            } else {
-              adRequestBuilder = adRequestBuilder.addTestDevice(testDeviceID);
-            }
+        if (mInterstitialAd.isLoaded() || mInterstitialAd.isLoading()) return;
+        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
+        if (testDeviceID != null){
+          if (testDeviceID.equals("EMULATOR")) {
+            adRequestBuilder = adRequestBuilder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+          } else {
+            adRequestBuilder = adRequestBuilder.addTestDevice(testDeviceID);
           }
-          AdRequest adRequest = adRequestBuilder.build();
-          mInterstitialAd.loadAd(adRequest);
         }
+        AdRequest adRequest = adRequestBuilder.build();
+        mInterstitialAd.loadAd(adRequest);
       }
     });
   }
 
   @ReactMethod
-  public void showAd(final Callback callback) {
+  public void showAd() {
     new Handler(Looper.getMainLooper()).post(new Runnable() {
       @Override
       public void run () {
-        if (mInterstitialAd.isLoaded()) {
-          showAdCallback = callback;
+        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
           mInterstitialAd.show();
-        } else {
-          callback.invoke("Ad is not ready."); // TODO: make proper error
         }
       }
     });

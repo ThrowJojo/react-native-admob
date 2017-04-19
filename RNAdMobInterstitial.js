@@ -62,17 +62,15 @@ const tryShowNewInterstitial = (testID) => {
 
   RNAdMobInterstitial.isReady((isReady) => {
     if (isReady) {
-      RNAdMobInterstitial.showAd(() => {});
-    } else {
-      RNAdMobInterstitial.requestAd(() => RNAdMobInterstitial.showAd(() => {}));
+      RNAdMobInterstitial.showAd();
     }
   });
 };
 
 module.exports = {
   ...RNAdMobInterstitial,
-  requestAd: (cb = () => {}) => RNAdMobInterstitial.requestAd(cb), // requestAd callback is optional
-  showAd: (cb = () => {}) => RNAdMobInterstitial.showAd(cb),       // showAd callback is optional
+  requestAd: RNAdMobInterstitial.requestAd,
+  showAd: RNAdMobInterstitial.showAd,
   tryShowNewInterstitial,
   addEventListener,
   removeEventListener,

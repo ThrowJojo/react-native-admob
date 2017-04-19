@@ -5,7 +5,6 @@
   NSString *_adUnitID;
   NSString *_testDeviceID;
   RCTResponseSenderBlock _requestAdCallback;
-  RCTResponseSenderBlock _showAdCallback;
 }
 
 @synthesize bridge = _bridge;
@@ -54,7 +53,6 @@ RCT_EXPORT_METHOD(requestAd:(RCTResponseSenderBlock)callback)
 RCT_EXPORT_METHOD(showAd:(RCTResponseSenderBlock)callback)
 {
   if ([_interstitial isReady]) {
-    _showAdCallback = callback;
     [_interstitial presentFromRootViewController:[UIApplication sharedApplication].delegate.window.rootViewController];
   }
   else {
@@ -83,7 +81,6 @@ didFailToReceiveAdWithError:(GADRequestError *)error {
 
 - (void)interstitialWillPresentScreen:(GADInterstitial *)ad {
   [self.bridge.eventDispatcher sendDeviceEventWithName:@"interstitialDidOpen" body:nil];
-  _showAdCallback(@[[NSNull null]]);
 }
 
 - (void)interstitialDidDismissScreen:(GADInterstitial *)ad {
