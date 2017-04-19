@@ -4,7 +4,6 @@
   GADInterstitial  *_interstitial;
   NSString *_adUnitID;
   NSString *_testDeviceID;
-  RCTResponseSenderBlock _requestAdCallback;
 }
 
 @synthesize bridge = _bridge;
@@ -28,11 +27,9 @@ RCT_EXPORT_METHOD(setTestDeviceID:(NSString *)testDeviceID)
   _testDeviceID = testDeviceID;
 }
 
-RCT_EXPORT_METHOD(requestAd:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(requestAd)
 {
   if ([_interstitial hasBeenUsed] || _interstitial == nil) {
-    _requestAdCallback = callback;
-
     _interstitial = [[GADInterstitial alloc] initWithAdUnitID:_adUnitID];
     _interstitial.delegate = self;
 
@@ -45,8 +42,6 @@ RCT_EXPORT_METHOD(requestAd:(RCTResponseSenderBlock)callback)
       }
     }
     [_interstitial loadRequest:request];
-  } else {
-    callback(@[@"Ad is already loaded."]); // TODO: make proper error via RCTUtils.h
   }
 }
 
@@ -70,13 +65,11 @@ RCT_EXPORT_METHOD(isReady:(RCTResponseSenderBlock)callback)
 
 - (void)interstitialDidReceiveAd:(GADInterstitial *)ad {
   [self.bridge.eventDispatcher sendDeviceEventWithName:@"interstitialDidLoad" body:nil];
-  _requestAdCallback(@[[NSNull null]]);
 }
 
 - (void)interstitial:(GADInterstitial *)interstitial
 didFailToReceiveAdWithError:(GADRequestError *)error {
   [self.bridge.eventDispatcher sendDeviceEventWithName:@"interstitialDidFailToLoad" body:@{@"name": [error description]}];
-  _requestAdCallback(@[[error description]]);
 }
 
 - (void)interstitialWillPresentScreen:(GADInterstitial *)ad {
