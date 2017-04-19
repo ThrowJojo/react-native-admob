@@ -45,13 +45,10 @@ RCT_EXPORT_METHOD(requestAd)
   }
 }
 
-RCT_EXPORT_METHOD(showAd:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(showAd)
 {
   if ([_interstitial isReady]) {
     [_interstitial presentFromRootViewController:[UIApplication sharedApplication].delegate.window.rootViewController];
-  }
-  else {
-    callback(@[@"Ad is not ready."]); // TODO: make proper error via RCTUtils.h
   }
 }
 
