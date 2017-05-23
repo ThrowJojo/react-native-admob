@@ -47,7 +47,7 @@ RCT_EXPORT_METHOD(requestAd)
 
 RCT_EXPORT_METHOD(showAd)
 {
-  if ([_interstitial isReady]) {
+  if (_interstitial != nil && [_interstitial isReady]) {
     [_interstitial presentFromRootViewController:[UIApplication sharedApplication].delegate.window.rootViewController];
   }
 }
